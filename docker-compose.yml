@@ -1,0 +1,15 @@
+services:
+  web:
+    build: web
+    ports:
+      - 8080:80
+    depends_on:
+      - db
+    volumes:
+      - ./src/www:/var/www/html/:z
+  db:
+    build: db
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+    volumes:
+      - ./src/db:/docker-entrypoint-initdb.d:z
