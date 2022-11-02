@@ -1,15 +1,24 @@
 services:
   web:
     build: web
-    ports:
-      - 8080:80
     depends_on:
       - db
     volumes:
-      - ./src/www:/var/www/html/:z
+      - ./src/web:/etc/apache2/sites-available:z
+      - ./src/www:/var/www/html:z
   db:
     build: db
     environment:
       - MYSQL_ROOT_PASSWORD=password
+      - LANG=C.UTF-8
     volumes:
       - ./src/db:/docker-entrypoint-initdb.d:z
+  proxy:
+    build: proxy
+    ports:
+      - 8080:80
+    depends_on:
+      - web
+    volumes:
+      - ./src/proxy:/etc/nginx/conf.d:z
+      - ./src/www:/var/www/html:z
